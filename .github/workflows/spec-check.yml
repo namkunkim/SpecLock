@@ -1,0 +1,57 @@
+name: SpecLock Check
+
+# 문서(BR)와 테스트(@Spec)의 정합성을 검사한다.
+# 이 검사가 있어야 문서 부패가 조용히 진행되지 않는다.
+#   - 문서에 BR을 추가하고 테스트를 안 쓰면  → 빌드 실패
+#   - 문서에서 BR을 지우면                  → 고아 테스트로 드러남
+
+on:
+  pull_request:
+    paths:
+      - 'spec/**'
+      - '**/test/**'
+  push:
+    branches: [main, develop]
+
+jobs:
+  spec-consistency:
+    name: BR ↔ @Spec 정합성
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 정합성 검사
+        run: |
+          chmod +x scripts/check-spec.sh
+          ./scripts/check-spec.sh spec/uc src/test
+
+      # Windows 러너를 쓴다면 위 스텝 대신:
+      #   - name: 정합성 검사
+      #     shell: pwsh
+      #     run: .\scripts\check-spec.ps1 -SpecDir spec/uc -TestDir src/test
+
+  # 아래는 선택. BR 테스트만 따로 돌려 회귀를 빠르게 확인한다.
+  spec-tests:
+    name: BR 테스트
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: BR 테스트 실행
+        run: ./gradlew test --tests '*SpecTest'
+
+      - name: 결과 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spec-test-results
+          path: '**/build/reports/tests/'
