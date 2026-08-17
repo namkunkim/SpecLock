@@ -6,7 +6,7 @@ import kotlinx.coroutines.test.*
 /**
  * UC-<약어>-NN: <제목>
  *
- * 명세: spec/uc/UC-<약어>-NN.md
+ * 명세: docs/spec/uc/UC-<약어>-NN.md
  *
  * 이 파일의 테스트는 기존 코드에 대해 실행되어 명세와 실제 동작의 일치를 확인한다.
  * 실패는 고쳐야 할 문제가 아니라 분석해야 할 발견이다.

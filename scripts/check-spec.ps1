@@ -11,21 +11,21 @@
     본문 참조("BR-XXX-NNN 참조")는 정의가 아니므로 제외된다.
 
 .PARAMETER SpecDir
-    UC 문서 디렉터리. 기본값 spec/uc
+    UC 문서 디렉터리. 기본값 docs/spec/uc
 
 .PARAMETER TestDir
     테스트 소스 디렉터리. 기본값 src/test
 
 .EXAMPLE
     .\check-spec.ps1
-    .\check-spec.ps1 -SpecDir spec\uc -TestDir app\src\test
+    .\check-spec.ps1 -SpecDir domain\docs\spec\uc -TestDir domain\src\test
 
 .OUTPUTS
     종료 코드 0 = 정합, 1 = 불일치, 2 = 경로 오류
 #>
 
 param(
-    [string]$SpecDir = "spec/uc",
+    [string]$SpecDir = "docs/spec/uc",
     [string]$TestDir = "src/test"
 )
 

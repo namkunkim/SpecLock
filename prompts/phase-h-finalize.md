@@ -12,7 +12,7 @@
 
 산출물:
 
-1. spec/uc/UC-XXX-NN.md
+1. docs/spec/uc/UC-XXX-NN.md
    - templates/uc-template.md 형식 사용
    - 각 BR의 근거는 티켓 번호와 함께 한 문장 요약을 반드시 포함
    - Phase E에서 나온 상호 제약을 "상호 제약" 섹션에 채움
@@ -23,20 +23,29 @@
      빈 곳을 숨기지 않아야 다음 작업자와 AI가
      "여긴 아직 결정되지 않았다"를 알고 임의 판단하지 않는다
 
-2. spec/L0-overview.md 갱신
+2. docs/spec/L0-overview.md 갱신
    - UC 목록 갱신
    - 이번 UC 작업 중 알게 된 도메인 개념 관계가 있으면
      "도메인 개념 관계" 섹션에 추가 (다이어그램이 아니라 텍스트로)
    - 모듈 밖 사정으로 설계가 정당화되는 것이 있으면
      "시스템 경계 밖 맥락"에 추가
 
-3. spec/unknowns.md 에 출처 불명 항목 누적
+3. docs/spec/scope.md 갱신 (있는 경우만)
+   - Phase C에서 [경계] 섹션에 기록된 항목을
+     "경계를 넘는 의존성" 표로 옮김
+   - 이번 UC 작업 중 스코프 정의 자체가 바뀔 필요가 있으면
+     (포함 대상 추가/제외) 사람 승인 후 반영
+
+4. docs/spec/unknowns.md 에 출처 불명 항목 누적
    templates/unknowns.md 형식 사용
 
-4. 정합성 검사 실행하여 확인
-   Windows: scripts\check-spec.bat / 그 외: scripts/check-spec.sh
+5. 정합성 검사 실행하여 확인
+   저장소 루트에서 실행한다면 모듈 경로를 명시한다:
+   Windows: scripts\check-spec.bat <module>\docs\spec\uc <module>\src\test
+   그 외:   scripts/check-spec.sh <module>/docs/spec/uc <module>/src/test
+   모듈 디렉터리 안에서 실행한다면 인자 없이 기본값을 그대로 쓴다.
 
-5. 사이클 요약 (아래 형식)
+6. 사이클 요약 (아래 형식)
 ```
 
 ---
@@ -61,10 +70,15 @@ Phase H 마지막에 항상 출력한다. 조직에 작업 가치를 설명할 �
 
 ## CI 등록
 
+`.github/workflows/spec-check.yml`을 그대로 쓰면 저장소 안의 모든
+`*/docs/spec/uc`를 자동으로 찾아 모듈별로 검사한다. 모듈이 하나든
+여러 개든 워크플로우 수정 없이 그대로 동작한다.
+
+단일 모듈만 검사하는 최소 예시가 필요하면:
+
 ```yaml
-# .github/workflows/spec-check.yml
 - name: Spec-Test 정합성 검사
-  run: ./scripts/check-spec.sh spec/uc src/test
+  run: ./scripts/check-spec.sh domain/docs/spec/uc domain/src/test
 ```
 
 이 검사가 있어야 문서 부패가 조용히 진행되지 않는다.
@@ -79,9 +93,9 @@ AI 에이전트가 이 구조를 인식하도록 프로젝트 루트에 다음�
 ```markdown
 ## 명세 구조
 
-- `spec/L0-overview.md` — 모듈 책임, 경계, UC 목록
-- `spec/uc/UC-*.md` — UC별 Business Rule (BR-XXX-NNN)
-- `spec/unknowns.md` — 근거 불명 조건 (판단 전 확인 필요)
+- `docs/spec/L0-overview.md` — 모듈 책임, 경계, UC 목록
+- `docs/spec/uc/UC-*.md` — UC별 Business Rule (BR-XXX-NNN)
+- `docs/spec/unknowns.md` — 근거 불명 조건 (판단 전 확인 필요)
 - `test/spec/` — 각 BR의 검증 테스트 (@Spec으로 연결)
 
 ## 작업 규칙
@@ -90,7 +104,7 @@ AI 에이전트가 이 구조를 인식하도록 프로젝트 루트에 다음�
 2. `test/spec/` 전체가 통과해야 한다
 3. 테스트가 실패하면 코드를 고친다.
    테스트나 spec을 고쳐서 통과시키지 않는다
-4. `spec/` 변경은 사람 승인이 필요하다. 필요하면 제안만 하고 멈춘다
+4. `docs/spec/` 변경은 사람 승인이 필요하다. 필요하면 제안만 하고 멈춘다
 5. "미명세 영역"에 해당하는 작업은 진행 전에 확인을 요청한다
 ```
 

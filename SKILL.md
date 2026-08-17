@@ -19,8 +19,9 @@ description: Extracts executable behavioral specs from legacy code by pairing ea
 
 ```
 <module>/
-├── spec/
-│   ├── L0-overview.md          모듈 책임·경계·UC 목록 (모듈당 1개)
+├── docs/spec/
+│   ├── scope.md                 명세 범위 정의 (비연속 스코프일 때만)
+│   ├── L0-overview.md          모듈 책임·경계·UC 목록 (스코프당 1개)
 │   ├── uc/UC-<약어>-NN.md       UC별 BR 목록 (UC당 1개)
 │   └── unknowns.md             출처 불명 조건 누적 목록
 └── test/spec/
@@ -28,6 +29,8 @@ description: Extracts executable behavioral specs from legacy code by pairing ea
 ```
 
 UC 하나의 산출물은 **문서 A4 1장 + 테스트 파일 1개** 규모다. 이보다 커지면 UC를 쪼갤 신호다.
+
+명세 대상이 패키지나 모듈 하나로 응집되지 않고 **특정 클래스 + 명시된 여러 패키지** 같은 비연속 범위라면, Phase A 전에 `scope.md`로 범위와 경계를 먼저 선언한다. 단일 모듈이면 생략한다. 자세한 판단은 `prompts/phase-a-uc-discovery.md`의 A-0 참조.
 
 ## Phase 실행
 
@@ -54,6 +57,7 @@ UC 하나의 산출물은 **문서 A4 1장 + 테스트 파일 1개** 규모다. 
 
 ## 템플릿
 
+- `templates/scope.md` — 명세 범위 정의 (비연속 스코프일 때만 사용)
 - `templates/L0-overview.md` — 모듈 조망 문서
 - `templates/uc-template.md` — UC별 BR 문서
 - `templates/unknowns.md` — 출처 불명 조건 누적

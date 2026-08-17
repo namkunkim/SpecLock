@@ -83,4 +83,4 @@ D. 신규 제안   명세 누락 후보 기반. 내 결정 필요
 
 ## 승인 후
 
-승인된 BR만 Phase F로 넘긴다. 보류 항목은 `templates/unknowns.md` 형식으로 `spec/unknowns.md`에 누적한다.
+승인된 BR만 Phase F로 넘긴다. 보류 항목은 `templates/unknowns.md` 형식으로 `docs/spec/unknowns.md`에 누적한다.

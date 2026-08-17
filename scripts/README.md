@@ -19,17 +19,21 @@
 
 ## 사용법
 
+`docs/spec/`는 저장소 루트가 아니라 **작업 중인 모듈 아래**에 생긴다.
+경로는 항상 모듈 기준으로 지정한다 — 예: `domain` 모듈이면
+`domain/docs/spec/uc`, `domain/src/test`.
+
 **Windows**
 
 ```bat
 scripts\check-spec.bat
-scripts\check-spec.bat spec\uc app\src\test
+scripts\check-spec.bat domain\docs\spec\uc domain\src\test
 ```
 
 또는 PowerShell에서 직접:
 
 ```powershell
-.\scripts\check-spec.ps1 -SpecDir spec\uc -TestDir app\src\test
+.\scripts\check-spec.ps1 -SpecDir domain\docs\spec\uc -TestDir domain\src\test
 ```
 
 `.ps1` 실행이 정책으로 막혀 있으면 `.bat`을 쓰면 된다. 배치 래퍼가 `-ExecutionPolicy Bypass`로 호출하므로 전역 정책을 바꿀 필요가 없다.
@@ -38,15 +42,33 @@ scripts\check-spec.bat spec\uc app\src\test
 
 ```bash
 chmod +x scripts/check-spec.sh
-./scripts/check-spec.sh spec/uc src/test
+./scripts/check-spec.sh domain/docs/spec/uc domain/src/test
+```
+
+**모듈이 여럿일 때**
+
+모듈마다 한 번씩 호출하거나, 저장소 안의 모든 `*/docs/spec/uc`를
+자동으로 찾아 전부 검사한다. `.github/workflows/spec-check.yml`의
+`spec-consistency` 잡이 이 방식으로 되어 있다.
+
+```bash
+while IFS= read -r spec_dir; do
+  module_dir="${spec_dir%/docs/spec/uc}"
+  ./scripts/check-spec.sh "$spec_dir" "$module_dir/src/test"
+done < <(find . -type d -path '*/docs/spec/uc')
 ```
 
 ## 인자
 
 | 위치 | 의미 | 기본값 |
 |---|---|---|
-| 1 | UC 문서 디렉터리 | `spec/uc` |
-| 2 | 테스트 소스 디렉터리 | `src/test` |
+| 1 | UC 문서 디렉터리 | `docs/spec/uc` (현재 디렉터리 기준) |
+| 2 | 테스트 소스 디렉터리 | `src/test` (현재 디렉터리 기준) |
+
+**기본값은 저장소 루트가 아니라 스크립트를 실행한 위치 기준이다.**
+모듈 디렉터리 안에서 인자 없이 실행하면 그 모듈의 `docs/spec/uc`,
+`src/test`를 본다. 저장소 루트에서 실행할 때는 대상 모듈 경로를
+반드시 인자로 명시한다.
 
 ## 종료 코드
 
@@ -83,12 +105,14 @@ chmod +x scripts/check-spec.sh
 
 ## CI
 
-GitHub Actions 예시는 `.github/workflows/spec-check.yml` 참조.
+GitHub Actions 예시는 `.github/workflows/spec-check.yml` 참조. 저장소 안의
+모든 `*/docs/spec/uc`를 자동으로 찾아 모듈별로 검사한다 — 모듈이 하나든
+여러 개든 수정 없이 그대로 쓸 수 있다.
 
-Windows 러너에서 돌린다면:
+단일 모듈만 검사하고 싶다면 (Windows 러너 예시):
 
 ```yaml
-- name: 정합성 검사
+- name: 정합성 검사 (domain 모듈)
   shell: pwsh
-  run: .\scripts\check-spec.ps1 -SpecDir spec/uc -TestDir src/test
+  run: .\scripts\check-spec.ps1 -SpecDir domain/docs/spec/uc -TestDir domain/src/test
 ```

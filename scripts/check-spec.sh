@@ -7,10 +7,14 @@
 #   - 문서에서 BR을 지우면 고아 테스트가 드러남
 #
 # 사용법: ./check-spec.sh [spec_dir] [test_dir]
+#
+# docs/spec/ 은 저장소 루트가 아니라 모듈 아래에 생긴다.
+# 예: domain 모듈이면 ./check-spec.sh domain/docs/spec/uc domain/src/test
+# 인자를 생략하면 현재 디렉터리 기준 docs/spec/uc, src/test 를 본다.
 
 set -uo pipefail
 
-SPEC_DIR="${1:-spec/uc}"
+SPEC_DIR="${1:-docs/spec/uc}"
 TEST_DIR="${2:-src/test}"
 
 [ -d "$SPEC_DIR" ] || { echo "spec 디렉터리 없음: $SPEC_DIR"; exit 1; }

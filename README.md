@@ -24,7 +24,8 @@ AI 코드 생성이 본격화되면 이 문제는 **더 심해진다.** 사람�
 
 ```
 <module>/
-├── spec/
+├── docs/spec/
+│   ├── scope.md                 명세 범위 정의 (비연속 스코프일 때만)
 │   ├── L0-overview.md          모듈 책임·경계·UC 목록
 │   ├── uc/UC-<약어>-NN.md       UC별 BR 목록
 │   └── unknowns.md             출처 불명 조건 누적
@@ -35,6 +36,8 @@ AI 코드 생성이 본격화되면 이 문제는 **더 심해진다.** 사람�
 BR ID가 문서와 테스트를 잇고, CI가 양방향 정합성을 검사한다. 문서에 BR을 추가하고 테스트를 안 쓰면 빌드가 깨진다.
 
 UC 하나의 산출물은 **문서 A4 1장 + 테스트 파일 1개** 규모다.
+
+담당 범위가 패키지·모듈 하나로 딱 떨어지지 않고 **특정 클래스 + 명시된 여러 패키지** 같은 비연속 조합이라면, `scope.md`로 범위와 제외 근거, 경계를 넘는 의존성을 먼저 선언한다. 단일 모듈이면 생략한다.
 
 ## 프로세스
 
@@ -77,18 +80,24 @@ git clone <this-repo> ~/.claude/skills/speclock
 
 ### 3. CI 검사 등록
 
-Windows:
+`docs/spec/`는 저장소 루트가 아니라 **작업 중인 모듈 아래**에 생긴다.
+Mihon에서 domain 모듈을 작업했다면 `domain/docs/spec/uc`, `domain/src/test`다.
+
+Windows (모듈 하나를 지정):
 
 ```bat
-scripts\check-spec.bat spec\uc src\test
+scripts\check-spec.bat domain\docs\spec\uc domain\src\test
 ```
 
-Linux / macOS:
+Linux / macOS (모듈 하나를 지정):
 
 ```bash
 chmod +x scripts/check-spec.sh
-./scripts/check-spec.sh spec/uc src/test
+./scripts/check-spec.sh domain/docs/spec/uc domain/src/test
 ```
+
+모듈이 여럿이면 모듈마다 한 번씩 호출하거나, `.github/workflows/spec-check.yml`
+처럼 저장소 안의 모든 `*/docs/spec/uc`를 자동으로 찾아 전부 검사하게 만든다.
 
 세 스크립트(`.bat` / `.ps1` / `.sh`)가 동일한 판정과 종료 코드를 낸다. 상세는 [scripts/README.md](scripts/README.md).
 

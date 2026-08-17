@@ -19,7 +19,7 @@ REM ============================================================
 set "SPEC_DIR=%~1"
 set "TEST_DIR=%~2"
 
-if "%SPEC_DIR%"=="" set "SPEC_DIR=spec/uc"
+if "%SPEC_DIR%"=="" set "SPEC_DIR=docs/spec/uc"
 if "%TEST_DIR%"=="" set "TEST_DIR=src/test"
 
 where powershell >nul 2>&1
